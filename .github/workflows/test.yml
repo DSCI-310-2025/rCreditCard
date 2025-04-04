@@ -1,0 +1,33 @@
+name: R-CMD-check
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Set up R
+        uses: r-lib/actions/setup-r@v2
+
+      - name: Set working directory to dataVizModelR
+        run: cd dataVizModelR
+
+      - name: Install dependencies
+        run: |
+          install.packages("devtools")
+          devtools::install()
+
+      - name: Run tests
+        run: |
+          cd dataVizModelR
+          devtools::test()

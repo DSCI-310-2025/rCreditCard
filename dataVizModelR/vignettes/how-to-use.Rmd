@@ -1,0 +1,20 @@
+---
+title: "how-to-use dataVizModelR"
+author: "group 12"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{how-to-use}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(dataVizModelR)
+```
