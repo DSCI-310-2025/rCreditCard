@@ -24,10 +24,10 @@ jobs:
 
       - name: Install dependencies
         run: |
-          install.packages("devtools")
-          devtools::install()
+          Rscript -e "install.packages('devtools')"
+          Rscript -e "devtools::install()"
 
       - name: Run tests
         run: |
           cd dataVizModelR
-          devtools::test()
+          Rscript -e "devtools::test()"
