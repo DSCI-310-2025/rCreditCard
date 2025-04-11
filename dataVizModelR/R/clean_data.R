@@ -8,7 +8,6 @@ clean_column_names <- function(df) {
   return(df)
 }
 
-
 #' Split dataset into training and test sets
 #' @param df A data frame
 #' @param train_size Proportion of data to use for training (default: 0.8)
@@ -44,3 +43,6 @@ compute_avg_amounts <- function(df) {
   df <- df %>% select(-all_of(c(bill_amt_cols, pay_amt_cols)))
   return(df)
 }
+
+
+# Why do they use this format instead of loading libraries ? janitor::clean_names()? What are the pros and cons?
