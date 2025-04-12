@@ -1,5 +1,3 @@
-^renv$
-^renv\.lock$
 ^dataVizModelR\.Rproj$
 ^\.Rproj\.user$
 ^doc$
