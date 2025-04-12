@@ -12,6 +12,12 @@ jobs:
   test:
     runs-on: ubuntu-latest
 
+    env:
+      R_LIBS_USER: ${{ runner.temp }}/Rlibs
+      TZ: UTC
+      _R_CHECK_SYSTEM_CLOCK_: FALSE
+      NOT_CRAN: true
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
@@ -22,39 +28,29 @@ jobs:
       - name: Cache R packages
         uses: actions/cache@v3
         with:
-          path: ~/.cache/R
+          path: ${{ env.R_LIBS_USER }}
           key: ${{ runner.os }}-r-${{ hashFiles('**/DESCRIPTION') }}
-          restore-keys: |
-            ${{ runner.os }}-r-
+          restore-keys: ${{ runner.os }}-r-
 
       - name: Install system dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y libcurl4-openssl-dev libfontconfig1-dev libfreetype6-dev
+          sudo apt-get install -y libcurl4-openssl-dev libssl-dev libxml2-dev libfontconfig1-dev libfreetype6-dev libharfbuzz-dev libfribidi-dev libpng-dev libtiff5-dev libjpeg-dev
 
-      - name: Install R dependencies (including devtools and friends)
-        working-directory: dataVizModelR
+      - name: Install R dependencies
         run: |
-          Rscript -e 'install.packages(c("remotes", "usethis", "pkgdown", "rcmdcheck", "rversions", "urlchecker"))'
-          Rscript -e 'install.packages("devtools")'
+          Rscript -e 'install.packages(c("remotes", "devtools", "usethis", "pkgdown", "rcmdcheck", "rversions", "urlchecker"), repos = "https://cran.rstudio.com")'
           Rscript -e 'remotes::install_deps(dependencies = TRUE)'
+          Rscript -e 'remotes::install_cran("devtools")'
 
       - name: Run tests
-        working-directory: dataVizModelR
-        run: |
-          Rscript -e "devtools::test()"
+        run: Rscript -e "devtools::test()"
 
       - name: Render documentation
-        working-directory: dataVizModelR
-        run: |
-          Rscript -e "devtools::document()"
+        run: Rscript -e "devtools::document()"
 
       - name: Render vignettes
-        working-directory: dataVizModelR
-        run: |
-          Rscript -e "devtools::build_vignettes()"
+        run: Rscript -e "devtools::build_vignettes()"
 
       - name: Build pkgdown site
-        working-directory: dataVizModelR
-        run: |
-          Rscript -e "pkgdown::build_site()"
+        run: Rscript -e "pkgdown::build_site()"
