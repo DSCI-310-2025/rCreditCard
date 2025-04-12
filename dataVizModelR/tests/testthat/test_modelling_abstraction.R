@@ -15,10 +15,10 @@ test_that("normalize returns NaN for constant input", {
   expect_true(all(is.nan(result)))
 })
 
-# Test split_dataset()
-test_that("split_dataset splits into 80/20", {
+# Test split_data()
+test_that("split_data splits into 80/20", {
   df <- data.frame(x = 1:100, y = rnorm(100))
-  splits <- split_dataset(df)
+  splits <- split_data(df)
   expect_named(splits, c("train", "test"))
   expect_equal(nrow(splits$train), 80)
   expect_equal(nrow(splits$test), 20)
@@ -31,7 +31,7 @@ test_that("prepare_knn_data returns proper structure", {
     LIMIT_BAL = runif(100, 10000, 500000),
     AGE = sample(20:60, 100, replace = TRUE)
   )
-  splits <- split_dataset(df)
+  splits <- split_data(df)
   result <- prepare_knn_data(splits$train, splits$test)
   expect_named(result, c("train", "test", "train_labels", "test_labels"))
   expect_equal(nrow(result$train), nrow(splits$train))
@@ -50,7 +50,7 @@ test_that("evaluate_k_values returns accuracy for each k", {
     LIMIT_BAL = runif(60, 10000, 500000),
     AGE = sample(20:60, 60, replace = TRUE)
   )
-  splits <- split_dataset(df)
+  splits <- split_data(df)
   knn_data <- prepare_knn_data(splits$train, splits$test)
   result <- evaluate_k_values(knn_data$train, knn_data$test, knn_data$train_labels, knn_data$test_labels, k_values = 1:3)
   expect_s3_class(result, "data.frame")

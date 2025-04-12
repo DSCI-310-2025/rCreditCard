@@ -2,32 +2,46 @@ name: R-CMD-check
 
 on:
   push:
-    branches:
-      - main
+    branches: [main]
   pull_request:
-    branches:
-      - main
+    branches: [main]
 
 jobs:
-  test:
+  R-CMD-check:
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Set up R
         uses: r-lib/actions/setup-r@v2
 
-      - name: Set working directory to dataVizModelR
-        run: cd dataVizModelR
+      - name: Set up pandoc (required for vignettes)
+        uses: r-lib/actions/setup-pandoc@v2
 
-      - name: Install dependencies
+      - name: Install system dependencies
         run: |
-          Rscript -e "install.packages('devtools')"
-          Rscript -e "devtools::install()"
+          sudo apt-get update
+          sudo apt-get install -y libcurl4-openssl-dev libssl-dev libxml2-dev
 
-      - name: Run tests
+      - name: Cache R packages
+        uses: actions/cache@v3
+        with:
+          path: ~/.cache/R/renv
+          key: ${{ runner.os }}-renv-${{ hashFiles('**/renv.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-renv-
+
+      - name: Install renv and restore project library
         run: |
-          cd dataVizModelR
-          Rscript -e "devtools::test()"
+          Rscript -e 'install.packages("renv", repos = "https://cloud.r-project.org")'
+          Rscript -e 'renv::restore()'
+
+      - name: Install additional tools (outside renv, just in case)
+        run: |
+          Rscript -e 'install.packages(c("devtools", "roxygen2", "rmarkdown", "knitr", "testthat"), repos = "https://cloud.r-project.org")'
+
+      - name: Run devtools::check()
+        run: |
+          Rscript -e 'devtools::check(document = TRUE, build_vignettes = TRUE, error_on = "warning")'
