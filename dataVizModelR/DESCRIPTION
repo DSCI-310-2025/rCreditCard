@@ -19,13 +19,15 @@ Imports:
     dplyr,
     ggplot2,
     janitor,
-    lattice,
     tidyr,
     tidyselect,
-    stats
+    stats,
+    magrittr
 Suggests: 
     knitr,
     rmarkdown,
-    testthat (>= 3.0.0)
+    testthat (>= 3.0.0),
+    devtools
 VignetteBuilder: knitr
 Config/testthat/edition: 3
+
