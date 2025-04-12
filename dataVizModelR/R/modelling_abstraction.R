@@ -13,11 +13,22 @@ normalize <- function(x) {
 #' @param df A data frame
 #' @return A list with 'train' and 'test' data frames
 #' @export
-split_dataset <- function(df) {
+split_data <- function(df, train_size = 0.8) {
+  assert_dataframe(df)
+
+  set.seed(123)  # For reproducibility
   n <- nrow(df)
-  train_index <- 1:round(0.8 * n)
-  list(train = df[train_index, ], test = df[-train_index, ])
+  train_index <- sample(seq_len(n), size = floor(train_size * n))
+  train = df[train_index, ]
+  test = df[-train_index, ]
+
+  # validation starts here
+  validate_split_data(df, train = train, test = test, target_col = NULL)
+  warn_on_duplicates(train, test);
+  return(list(train = train, test = test))
 }
+
+
 
 #' Prepare normalized predictors and extract labels
 #'
@@ -27,20 +38,31 @@ split_dataset <- function(df) {
 #' @return A list with normalized train/test data and labels
 #' @export
 prepare_knn_data <- function(df_train, df_test, target = "default_payment_next_month") {
+  assert_dataframe(df_train)
+  assert_dataframe(df_test)
+
   if (!(target %in% colnames(df_train)) || !(target %in% colnames(df_test))) {
     stop(paste("Target column", target, "not found in data."))
   }
+  
+  eval_target_feature_correlations(df_train, target, threshold = 0.9);
   
   numeric_columns <- sapply(df_train, is.numeric)
   
   train_labels <- as.factor(df_train[[target]])
   test_labels <- as.factor(df_test[[target]])
-  
+  eval_factor_levels(train_labels, test_labels)
+
+
   train_norm <- as.data.frame(lapply(df_train[, numeric_columns], normalize))
   test_norm <- as.data.frame(lapply(df_test[, numeric_columns], normalize))
-  
+  # Checks train_norm and test_norm has no anomolous outliers.
+  eval_norm_outliers(train_norm, test_norm)
+
+
   train_norm <- train_norm[, colnames(train_norm) != target]
   test_norm <- test_norm[, colnames(test_norm) != target]
+
   
   list(
     train = train_norm,
@@ -76,6 +98,7 @@ evaluate_k_values <- function(train, test, train_labels, test_labels, k_values =
 #' @param out_path Output file path for the plot (PNG)
 #' @export
 save_accuracy_plot <- function(accuracy_df, out_path) {
+  assert_dataframe(accuracy_df)
   p <- ggplot2::ggplot(accuracy_df, ggplot2::aes(x = k, y = accuracy)) +
     ggplot2::geom_line(color = "blue") +
     ggplot2::geom_point(color = "red", size = 3) +

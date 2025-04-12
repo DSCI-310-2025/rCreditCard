@@ -4,6 +4,8 @@
 #' @return A ggplot object showing the bar plot
 #' @export
 make_target_plot <- function(df) {
+  assert_dataframe(df)
+
   if (!"default_payment_next_month" %in% colnames(df)) {
     stop("Column 'default_payment_next_month' not found in the dataframe.")
   }

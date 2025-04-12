@@ -13,6 +13,8 @@
 #' @examples
 #' # make_scatter_facet_plot(df, c("LIMIT_BAL", "AGE"))
 make_scatter_facet_plot <- function(df, features) {
+  assert_dataframe(df)
+
   missing <- setdiff(features, colnames(df))
   if (length(missing) > 0) stop(paste("Missing columns:", paste(missing, collapse = ", ")))
   

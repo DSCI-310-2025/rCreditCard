@@ -4,9 +4,12 @@
 #' @return A data frame with cleaned column names
 #' @export
 clean_column_names <- function(df) {
+  assert_dataframe(df) # checks if a proper data.frame is passed
+
   df <- janitor::clean_names(df)  # janitor::clean_names already applies snake_case
   return(df)
 }
+
 
 #' Split dataset into training and test sets
 #' @param df A data frame
@@ -14,10 +17,17 @@ clean_column_names <- function(df) {
 #' @return A list with train and test data frames
 #' @export
 split_data <- function(df, train_size = 0.8) {
+  assert_dataframe(df)
+
   set.seed(123)  # For reproducibility
   n <- nrow(df)
   train_index <- sample(seq_len(n), size = floor(train_size * n))
-  list(train = df[train_index, ], test = df[-train_index, ])
+  train = df[train_index, ]
+  test = df[-train_index, ]
+
+  # validation starts here
+  validate_split_data(df, train = train, test = test, target_col = NULL)
+  return(list(train = train, test = test))
 }
 
 
@@ -27,6 +37,7 @@ split_data <- function(df, train_size = 0.8) {
 #' @return A data frame with new avg columns and removed original columns
 #' @export
 compute_avg_amounts <- function(df) {
+  assert_dataframe(df)
   library(dplyr)
   # Identify columns
   bill_amt_cols <- names(df)[grepl("^bill_amt", names(df))]
@@ -40,7 +51,7 @@ compute_avg_amounts <- function(df) {
     df$avg_pay_amt <- rowMeans(df[, pay_amt_cols, drop = FALSE], na.rm = TRUE)
   }
   # Remove original columns after computing averages
-  df <- df %>% select(-all_of(c(bill_amt_cols, pay_amt_cols)))
+  df <- df %>% dplyr::select(-all_of(c(bill_amt_cols, pay_amt_cols)))
   return(df)
 }
 
