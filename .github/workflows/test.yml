@@ -12,11 +12,6 @@ jobs:
   test:
     runs-on: ubuntu-latest
 
-    env:
-      TZ: UTC
-      _R_CHECK_SYSTEM_CLOCK_: FALSE
-      NOT_CRAN: true
-
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
@@ -24,61 +19,31 @@ jobs:
       - name: Set up R
         uses: r-lib/actions/setup-r@v2
 
-      - name: Set R_LIBS_USER
-        run: echo "R_LIBS_USER=${RUNNER_TEMP}/Rlibs" >> $GITHUB_ENV
-
-      - name: Cache R packages
-        uses: actions/cache@v3
-        with:
-          path: ${{ env.R_LIBS_USER }}
-          key: ${{ runner.os }}-r-${{ hashFiles('**/DESCRIPTION') }}
-          restore-keys: ${{ runner.os }}-r-
-
-      - name: Install system dependencies
+      - name: Install devtools
         run: |
-          sudo apt-get update
-          sudo apt-get install -y \
-            libcurl4-openssl-dev \
-            libssl-dev \
-            libxml2-dev \
-            libfontconfig1-dev \
-            libfreetype6-dev \
-            libharfbuzz-dev \
-            libfribidi-dev \
-            libpng-dev \
-            libtiff5-dev \
-            libjpeg-dev
+          Rscript -e 'install.packages("devtools", repos = "https://cran.rstudio.com")'
 
-      - name: Install helper R packages
-        run: |
-          Rscript -e 'dir.create(Sys.getenv("R_LIBS_USER"), recursive = TRUE)'
-          Rscript -e '.libPaths(Sys.getenv("R_LIBS_USER")); install.packages(c("remotes", "devtools"), repos = "https://cran.rstudio.com")'
-
-      - name: Install package dependencies
+      - name: Install package (with dependencies)
         working-directory: dataVizModelR
         run: |
-          Rscript -e '.libPaths(Sys.getenv("R_LIBS_USER")); remotes::install_deps(dependencies = TRUE, type = "both")'
-
-      - name: Verify devtools is installed
-        run: |
-          Rscript -e '.libPaths(Sys.getenv("R_LIBS_USER")); stopifnot("devtools" %in% rownames(installed.packages()))'
+          Rscript -e 'devtools::install(dependencies = TRUE)'
 
       - name: Run tests
         working-directory: dataVizModelR
         run: |
-          Rscript -e '.libPaths(Sys.getenv("R_LIBS_USER")); devtools::test()'
+          Rscript -e 'devtools::test()'
 
       - name: Render documentation
         working-directory: dataVizModelR
         run: |
-          Rscript -e '.libPaths(Sys.getenv("R_LIBS_USER")); devtools::document()'
+          Rscript -e 'devtools::document()'
 
-      - name: Render vignettes
+      - name: Build vignettes
         working-directory: dataVizModelR
         run: |
-          Rscript -e '.libPaths(Sys.getenv("R_LIBS_USER")); devtools::build_vignettes()'
+          Rscript -e 'devtools::build_vignettes()'
 
-      - name: Build pkgdown site
+      - name: Build site
         working-directory: dataVizModelR
         run: |
-          Rscript -e '.libPaths(Sys.getenv("R_LIBS_USER")); pkgdown::build_site()'
+          Rscript -e 'install.packages("pkgdown", repos = "https://cran.rstudio.com"); pkgdown::build_site()'
