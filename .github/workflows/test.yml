@@ -27,21 +27,25 @@ jobs:
       - name: Install R dependencies
         working-directory: dataVizModelR
         run: |
-          install.packages(c("remotes", "usethis", "pkgdown", "rcmdcheck", "rversions", "urlchecker"))
-          remotes::install_deps(dependencies = TRUE)
+          Rscript -e 'install.packages(c("remotes", "usethis", "pkgdown", "rcmdcheck", "rversions", "urlchecker"))'
+          Rscript -e 'remotes::install_deps(dependencies = TRUE)'
 
       - name: Run tests
         working-directory: dataVizModelR
-        run: Rscript -e "devtools::test()"
+        run: |
+          Rscript -e "devtools::test()"
 
       - name: Render documentation
         working-directory: dataVizModelR
-        run: Rscript -e "devtools::document()"
+        run: |
+          Rscript -e "devtools::document()"
 
       - name: Render vignettes
         working-directory: dataVizModelR
-        run: Rscript -e "devtools::build_vignettes()"
+        run: |
+          Rscript -e "devtools::build_vignettes()"
 
       - name: Build pkgdown site
         working-directory: dataVizModelR
-        run: Rscript -e "pkgdown::build_site()"
+        run: |
+          Rscript -e "pkgdown::build_site()"
