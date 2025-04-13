@@ -11,16 +11,10 @@ Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.3.2
 Imports:
-    caret,
-    workflows,
-    readr,
     ggplot2,
     tidyr,
     dplyr,
-    testthat,
-    tibble,
-    tidyr,
-    tidymodels
+    testthat
 Suggests: 
     knitr,
     rmarkdown,
