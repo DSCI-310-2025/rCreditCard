@@ -1,3 +1,4 @@
+
 on:
   push:
     branches: [main, master]
@@ -6,7 +7,7 @@ on:
     types: [published]
   workflow_dispatch:
 
-name: pkgdown.yaml
+name: pckgdown.yml
 
 permissions: read-all
 
@@ -20,7 +21,6 @@ jobs:
       GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
     permissions:
       contents: write
-
     steps:
       - uses: actions/checkout@v4
 
@@ -32,11 +32,8 @@ jobs:
 
       - uses: r-lib/actions/setup-r-dependencies@v2
         with:
-          extra-packages: any::pkgdown
+          extra-packages: any::pkgdown, local::.
           needs: website
-
-      - name: Install package
-        run: R CMD INSTALL .
 
       - name: Build site
         run: pkgdown::build_site_github_pages(new_process = FALSE, install = FALSE)
