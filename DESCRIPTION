@@ -1,24 +1,24 @@
-Package: dataVizModelR
-Title: Visualizations for Credit Card Data Analysis
-Version: 0.1.0
-Authors@R: 
-    person("Group", "12", email = "pjymar28@gmail.com", role = c("aut", "cre"))
-Description: A package designed to visualize credit card data with a variety of plot types, 
-    including scatter plots, faceted plots, and target distribution plots. This package is ideal 
-    for data scientists analyzing financial datasets.
-License: MIT + file LICENSE
-Encoding: UTF-8
-Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.3.2
-Imports:
-    ggplot2,
-    tidyr,
-    dplyr,
-    testthat
-Suggests: 
-    knitr,
-    rmarkdown,
-    testthat (>= 3.0.0)
-VignetteBuilder: knitr
-Config/testthat/edition: 3
-URL: https://github.com/DSCI-310-2025/rCreditCard
+  Package: rCreditCard
+  Title: Visualizations for Credit Card Data Analysis
+  Version: 0.1.0
+  Authors@R: 
+      person("Group", "12", email = "pjymar28@gmail.com", role = c("aut", "cre"))
+  Description: A package designed to visualize credit card data with a variety of plot types, 
+      including scatter plots, faceted plots, and target distribution plots. This package is ideal 
+      for data scientists analyzing financial datasets.
+  License: MIT + file LICENSE
+  Encoding: UTF-8
+  Roxygen: list(markdown = TRUE)
+  RoxygenNote: 7.3.2
+  Imports:
+      ggplot2,
+      tidyr,
+      dplyr,
+      testthat
+  Suggests: 
+      knitr,
+      rmarkdown,
+      testthat (>= 3.0.0)
+  VignetteBuilder: knitr
+  Config/testthat/edition: 3
+  URL: https://github.com/DSCI-310-2025/rCreditCard

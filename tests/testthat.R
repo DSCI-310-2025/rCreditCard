@@ -7,6 +7,6 @@
 # * https://testthat.r-lib.org/articles/special-files.html
 
 library(testthat)
-library(dataVizModelR)
+library(rCreditCard)
 
-test_check("dataVizModelR")
+test_check("rCreditCard")
