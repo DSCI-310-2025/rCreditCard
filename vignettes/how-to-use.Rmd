@@ -1,6 +1,6 @@
 ---
-title: "how-to-use dataVizModelR"
-author: "group 12"
+title: "How to Use rCreditCard"
+author: "Group 12"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{how-to-use}
@@ -8,13 +8,26 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
-```{r, include = FALSE}
+```{r setup, include = FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>"
 )
+
+library(rCreditCard)
+library(dplyr)
 ```
 
-```{r setup}
-library(dataVizModelR)
+```{r}
+# example
+# Create a simple mock dataset
+mock_df <- data.frame(
+  var1 = 1:10,
+  var2 = 11:20,
+  default_payment_next_month = rep(0:1, each = 5)
+)
+
+# Apply split
+splits <- split_data(mock_df, train_size = 0.7)
+str(splits)
 ```

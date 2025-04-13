@@ -1,6 +1,6 @@
 library(testthat)
 library(ggplot2)
-source("../../R/make_target_plot.R")  # Adjust path as needed
+library(rCreditCard)
 
 test_that("make_target_plot returns a ggplot object", {
   df <- data.frame(default_payment_next_month = as.factor(c(0, 1, 1, 0, 0)))

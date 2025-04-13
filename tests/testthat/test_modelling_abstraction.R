@@ -1,4 +1,5 @@
 library(testthat)
+library(rCreditCard)
 
 # Test normalize()
 test_that("normalize scales between 0 and 1", {

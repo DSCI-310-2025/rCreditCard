@@ -1,5 +1,5 @@
 library(testthat)
-source("../../R/clean_data.R")
+library(rCreditCard)
 
 test_that("clean_column_names converts column names correctly", {
   df <- data.frame("column one" = 1, "column two" = 2)  # Spaces in column names

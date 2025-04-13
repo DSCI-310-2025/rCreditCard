@@ -1,3 +1,4 @@
+name: Deploy pkgdown site
 
 on:
   push:
@@ -7,20 +8,23 @@ on:
     types: [published]
   workflow_dispatch:
 
-name: pckgdown.yml
-
-permissions: read-all
+permissions:
+  contents: write
+  pages: write
+  id-token: write
 
 jobs:
   pkgdown:
+    name: Build and Deploy pkgdown Site
     runs-on: ubuntu-latest
-    # Only restrict concurrency for non-PR jobs
+
     concurrency:
-      group: pkgdown-${{ github.event_name != 'pull_request' || github.run_id }}
+      group: pkgdown-${{ github.event_name }}-${{ github.run_id }}
+      cancel-in-progress: false
+
     env:
       GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
-    permissions:
-      contents: write
+
     steps:
       - uses: actions/checkout@v4
 
@@ -35,14 +39,14 @@ jobs:
           extra-packages: any::pkgdown, local::.
           needs: website
 
-      - name: Build site
+      - name: Build pkgdown site
         run: pkgdown::build_site_github_pages(new_process = FALSE, install = FALSE)
         shell: Rscript {0}
 
-      - name: Deploy to GitHub pages 🚀
+      - name: Deploy to GitHub Pages 🚀
         if: github.event_name != 'pull_request'
         uses: JamesIves/github-pages-deploy-action@v4.5.0
         with:
-          clean: false
-          branch: gh-pages
-          folder: docs
+          branch: gh-pages      # Deploy branch
+          folder: docs          # Output folder from pkgdown
+          clean: true
