@@ -1,7 +1,7 @@
 #' Create scatter plots of features vs default status with faceting
 #'
 #' This function takes a dataframe and a vector of feature column names, then
-#' produces a faceted scatter plot showing the relationship between each feature
+#' produces a faceted scatter plot showing the relationship between each feature 
 #' and the binary default status.
 #'
 #' @param df A data frame containing the features and a column named `default_payment_next_month`
